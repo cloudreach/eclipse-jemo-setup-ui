@@ -10,6 +10,7 @@ export default new Router({
         {path: '/csp', name: 'csp', props: true, component: () => import('./views/Csp.vue')},
         {path: '/csp-cred', name: 'csp-cred', props: true, component: () => import('./views/CspCredentials.vue')},
         {path: '/csp-perm', name: 'csp-perm', props: true, component: () => import('./views/CspPermissions.vue')},
-        {path: '/user/create', name: 'user-create', props: true, component: () => import('./views/CreateUser.vue')}
+        {path: '/user/create', name: 'user-create', props: true, component: () => import('./views/CreateUser.vue')},
+        {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')}
     ]
 })

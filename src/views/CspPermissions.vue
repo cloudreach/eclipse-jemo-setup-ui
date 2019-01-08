@@ -20,7 +20,7 @@
             <h3>Setup Completed</h3>
             Great job! The user has all the needed permissions.
             <br/>
-            You can close this page as the setup is completed.
+            You can close this page as the setup is complete.
         </template>
     </v-container>
 </template>
@@ -40,6 +40,7 @@
                 .then(response => {
                     console.log(response);
                     this.permissions_validated = true;
+                    this.$router.push({name: 'jemo-params', params: {csp: this.csp}})
                 }, response => {
                     console.log(response);
                     this.permission_errors = response.data;

@@ -19,13 +19,13 @@
                                       :label="credential"
                                       required>
                         </v-text-field>
+
+                        <v-select v-for="(value, key) in csp.requiredEnumVariables" :key="key"
+                                :items="value"
+                                :label="key"
+                                  v-model="credentials[key]"
+                        ></v-select>
                     </v-form>
-                    <!--<v-alert :value="credential_errors"-->
-                    <!--color="error"-->
-                    <!--icon="warning"-->
-                    <!--outline>-->
-                    <!--<span>Authentication failed</span>. {{credential_errors}}-->
-                    <!--</v-alert>-->
                 </v-card-text>
                 <v-card-actions>
                     <v-btn class="mx-4" @click="validateCredentials">
@@ -51,12 +51,12 @@
         },
         methods: {
             validateCredentials: function () {
-                const formData = {
+                const payload = {
                     csp: this.csp.name,
-                    credentials: this.credentials
+                    parameters: this.credentials
                 };
-                console.log(formData);
-                this.$http.post('http://localhost:8081/x2manager/setup/credentials', formData)
+                console.log(payload);
+                this.$http.post('http://localhost:8081/x2manager/setup/credentials', payload)
                     .then(response => {
                         console.log(response);
                         this.credential_errors = null;

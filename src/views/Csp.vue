@@ -63,7 +63,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-btn class="mx-2" href="/x2manager/setup/terraform/jemo-template.tf" download>
-                        Download Terraform form</v-btn>
+                        Download Terraform Template</v-btn>
                 </v-card-actions>
             </v-card>
 

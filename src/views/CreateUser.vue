@@ -7,21 +7,33 @@
         </div>
 
         <div v-if="error">
-            <h3>User creation failed. The following error occurred:</h3>
-            {{error}}
-        </div>
-
-        <div v-if="userCreated">
-            <h3>Setup Completed</h3>
-            Great job! The user 'jemo-user' is created and has all the needed permissions.
-            <br/>
-
-            <div>
-                <pre>{{ terraformResult | pretty }}</pre>
+            <div v-if="error.code === 'TERRAFORM_NOT_INSTALLED'">
+                <h3>The server can not find the terraform command.</h3>
+                Either terraform is not installed (<a
+                    href="https://learn.hashicorp.com/terraform/getting-started/install.html" target="_blank">Installation
+                instructions</a>),
+                or it is not in the path. (e.g. run: terraform -version).
+                <br/>
+                <br/>
+                The server error was: <pre>{{error.message}}</pre>
             </div>
-
-            You can close this page as the setup is completed.
+            <div v-else>
+                <h3>Terraform failed to create the user. The following error occurred:</h3>
+                <pre>{{error.message}}</pre>
+            </div>
         </div>
+
+        <!--<div v-if="userCreated">-->
+            <!--<h3>Setup Completed</h3>-->
+            <!--Great job! The user 'jemo-user' is created and has all the needed permissions.-->
+            <!--<br/>-->
+
+            <!--<div>-->
+                <!--<pre>{{ terraformResult | pretty }}</pre>-->
+            <!--</div>-->
+
+            <!--You can close this page as the setup is complete.-->
+        <!--</div>-->
 
     </v-container>
 </template>
@@ -38,23 +50,24 @@
             }
         },
         mounted() {
-            const formData = {
+            const payload = {
                 csp: this.csp.name,
-                credentials: this.credentials
+                parameters: this.credentials
             };
-            this.$http.post('http://localhost:8081/x2manager/setup/createuser', formData)
+            this.$http.post('http://localhost:8081/x2manager/setup/createuser', payload)
                 .then(response => {
                     console.log(response);
                     this.userCreated = true;
                     this.error = null;
                     this.terraformResult = response.data;
+                    this.$router.push({name: 'jemo-params', params: {csp: this.csp}})
                 }, response => {
                     console.log(response);
                     this.error = response.data;
                 });
         },
         filters: {
-            pretty: function(value) {
+            pretty: function (value) {
                 return JSON.stringify(value, null, 2);
             }
         }
