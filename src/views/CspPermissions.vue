@@ -40,12 +40,11 @@
                 .then(response => {
                     console.log(response);
                     this.permissions_validated = true;
-                    this.$router.push({name: 'jemo-params', params: {csp: this.csp}})
+                    this.$router.push({name: 'jemo-param-set', params: {csp: this.csp}})
                 }, response => {
                     console.log(response);
                     this.permission_errors = response.data;
                 });
-        },
-        methods: {}
+        }
     }
 </script>

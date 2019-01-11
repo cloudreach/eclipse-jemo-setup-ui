@@ -7,18 +7,89 @@
                 <v-card-title primary-title>
                     <div>
                         <h3 class="headline mb-0">
-                            Please review default values for Jemo parameters
+                            Please review values for parameter set '{{paramSet.name}}'
                         </h3>
                     </div>
                 </v-card-title>
 
                 <v-card-text>
                     <v-form ref="form" class="mx-4" v-model="valid">
-                        <v-text-field v-for="(value, key) in parameters" :key="key"
-                                      v-model="parameters[key]"
-                                      :label="key"
+
+                        <v-text-field v-model="paramSet[params.location.name]"
+                                      :label="createLabel(params.location)"
                                       required>
                         </v-text-field>
+
+                        <v-select v-model="paramSet[params.locationType.name]"
+                                  :items="params.locationType.range"
+                                  :label="createLabel(params.locationType)">
+                        </v-select>
+
+                        <v-text-field v-model="paramSet[params.httpPort.name]"
+                                      :label="createLabel(params.httpPort)">
+                        </v-text-field>
+
+                        <v-select v-model="paramSet[params.httpMode.name]"
+                                  :items="params.httpMode.range"
+                                  :label="createLabel(params.httpMode)">
+                        </v-select>
+
+                        <v-text-field v-model="paramSet[params.whitelist.name]"
+                                      :label="createLabel(params.whitelist)">
+                        </v-text-field>
+
+                        <v-text-field v-model="paramSet[params.blacklist.name]"
+                                      :label="createLabel(params.blacklist)">
+                        </v-text-field>
+
+                        <v-text-field v-model="paramSet[params.polltime.name]"
+                                      :label="createLabel(params.polltime)">
+                        </v-text-field>
+
+                        <v-switch v-model="paramSet[params.logLocal.name]"
+                                  :label="createLabel(params.logLocal)"
+                                  color="indigo"
+                                  value="true"
+                                  hide-details>
+                        </v-switch>
+
+                        <v-text-field v-if="paramSet[params.logLocal.name] === 'true'"
+                                      v-model="paramSet[params.logOutput.name]"
+                                      :label="createLabel(params.logOutput)">
+                        </v-text-field>
+
+                        <v-select v-model="paramSet[params.logLevel.name]"
+                                  :items="params.logLevel.range"
+                                  :label="createLabel(params.logLevel)">
+                        </v-select>
+
+                        <!--<template v-for="(value, key) in textParamsToDisplay()">-->
+
+                            <!--<template v-if="key === 'eclipse.jemo.http.mode'">-->
+                                <!--<v-select v-model="paramSet[key]"-->
+                                          <!--:key="key"-->
+                                          <!--:items="httpModeRange"-->
+                                          <!--:label="key">-->
+                                <!--</v-select>-->
+                            <!--</template>-->
+
+                            <!--<template v-else-if="key === 'eclipse.jemo.location.type'">-->
+                                <!--<v-select v-model="paramSet[key]"-->
+                                          <!--:key="key"-->
+                                          <!--:items="locationTypeRange"-->
+                                          <!--:label="key">-->
+                                <!--</v-select>-->
+                            <!--</template>-->
+
+                            <!--<template v-else>-->
+                                <!--<v-text-field :key="key"-->
+                                              <!--v-model="paramSet[key]"-->
+                                              <!--:label="key"-->
+                                              <!--required>-->
+                                <!--</v-text-field>-->
+                            <!--</template>-->
+
+                        <!--</template>-->
                     </v-form>
 
                 </v-card-text>
@@ -45,44 +116,82 @@
 
         </v-layout>
     </v-container>
-    </template>
+</template>
 
-    <script>
-        export default {
-            data() {
-                return {
-                    csp: this.$route.params.csp,
-                    parameters: {
-                        'cloudreach.connect.location': 'AWS',
-                        'cloudreach.connect.http.port': '8080',
-                        'cloudreach.connect.http.mode': 'HTTP',
-                        'cloudreach.connect.plugin.whitelist': '',
-                        'cloudreach.connect.plugin.blacklist': '',
-                        'cloudreach.connect.queue.polltime': '20000',
-                        'cloudreach.connect.location.cloud': 'false',
-                        'cloudreach.connect.logs': '',
-                        'cloudreach.connect.output': '',
-                        'cloudreach.connect.log.level': 'INFO'
+<script>
+    export default {
+        data() {
+            return {
+                csp: this.$route.params.csp,
+                paramSet: this.$route.params.paramSet,
+                hasFinished: false,
+                valid: true,
+                params: {
+                    location: {
+                        name: 'eclipse.jemo.location',
+                        description: 'the cloud location name'
                     },
-                    hasFinished: false,
-                    valid: true
-                }
-            },
-            methods: {
-                sendParameters: function () {
-                    let payload = {
-                        csp: this.csp.name,
-                        parameters: this.parameters
+                    locationType: {
+                        name: 'eclipse.jemo.location.type',
+                        description: 'cloud or on-premise',
+                        range: ['CLOUD', 'ON-PREMISE'],
+                    },
+                    httpPort: {
+                        name: 'eclipse.jemo.http.port',
+                        description: 'the HTTP port'
+                    },
+                    httpMode: {
+                        name: 'eclipse.jemo.http.mode',
+                        description: 'the http mode',
+                        range: ['HTTP', 'HTTPS']
+                    },
+                    whitelist: {
+                        name: 'eclipse.jemo.module.whitelist',
+                        description: 'list of module ids to allow'
+                    },
+                    blacklist: {
+                        name: 'eclipse.jemo.module.blacklist',
+                        description: 'list of module ids to prevent'
+                    },
+                    polltime: {
+                        name: 'eclipse.jemo.queue.polltime',
+                        description: 'the que poll interval'
+                    },
+                    logLocal: {
+                        name: 'eclipse.jemo.log.local',
+                        description: 'switch to local logging - default is cloud logging'
+                    },
+                    logOutput: {
+                        name: 'eclipse.jemo.log.output',
+                        description: 'the local log file - default is STDOUT',
+                    },
+                    logLevel: {
+                        name: 'eclipse.jemo.log.level',
+                        description: 'the logging level',
+                        range: ['ALL', 'CONFIG', 'FINE', 'FINER', 'FINEST', 'INFO', 'OFF', 'SEVERE', 'WARNING']
                     }
-                    this.$http.post('http://localhost:8081/x2manager/setup/jemoparams', payload)
-                        .then(response => {
-                            console.log(response);
-                            this.hasFinished = true;
-                        }, response => {
-                            console.log(response);
-                            alert(response.data);
-                        });
                 }
+
+            }
+        },
+        methods: {
+            sendParameters: function () {
+                let payload = {
+                    csp: this.csp.name,
+                    parameters: JSON.parse(JSON.stringify(this.paramSet))
+                }
+                this.$http.post('http://localhost:8081/x2manager/setup/jemoparams', payload)
+                    .then(response => {
+                        console.log(response);
+                        this.hasFinished = true;
+                    }, response => {
+                        console.log(response);
+                        alert(response.data.message);
+                    });
+            },
+            createLabel(param) {
+                return param.name + ' ('+ param.description + ')';
             }
         }
-    </script>
+    }
+</script>

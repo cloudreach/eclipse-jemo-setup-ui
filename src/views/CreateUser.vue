@@ -43,7 +43,7 @@
         data() {
             return {
                 csp: this.$route.params.csp,
-                credentials: this.$route.params.credentials,
+                parameters: this.$route.params.parameters,
                 userCreated: false,
                 error: null,
                 terraformResult: null
@@ -52,7 +52,7 @@
         mounted() {
             const payload = {
                 csp: this.csp.name,
-                parameters: this.credentials
+                parameters: this.parameters
             };
             this.$http.post('http://localhost:8081/x2manager/setup/createuser', payload)
                 .then(response => {
@@ -60,7 +60,7 @@
                     this.userCreated = true;
                     this.error = null;
                     this.terraformResult = response.data;
-                    this.$router.push({name: 'jemo-params', params: {csp: this.csp}})
+                    this.$router.push({name: 'jemo-param-set', params: {csp: this.csp}})
                 }, response => {
                     console.log(response);
                     this.error = response.data;

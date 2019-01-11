@@ -11,6 +11,7 @@ export default new Router({
         {path: '/csp-cred', name: 'csp-cred', props: true, component: () => import('./views/CspCredentials.vue')},
         {path: '/csp-perm', name: 'csp-perm', props: true, component: () => import('./views/CspPermissions.vue')},
         {path: '/user/create', name: 'user-create', props: true, component: () => import('./views/CreateUser.vue')},
+        {path: '/jemo/param-set', name: 'jemo-param-set', props: true, component: () => import('./views/JemoParamSet.vue')},
         {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')}
     ]
 })

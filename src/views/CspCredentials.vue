@@ -15,16 +15,48 @@
                 <v-card-text>
                     <v-form ref="form" class="mx-4" v-model="valid">
                         <v-text-field v-for="credential in csp.requiredCredentials" :key="credential"
-                                      v-model="credentials[credential]"
+                                      v-model="parameters[credential]"
                                       :label="credential"
                                       required>
                         </v-text-field>
 
-                        <v-select v-for="(value, key) in csp.requiredEnumVariables" :key="key"
-                                :items="value"
-                                :label="key"
-                                  v-model="credentials[key]"
-                        ></v-select>
+                        <v-container fluid>
+                            <v-layout row wrap align-center>
+                                <v-flex xs6>
+                                    <v-subheader>Select Region</v-subheader>
+                                </v-flex>
+
+                                <v-flex xs6>
+                                    <v-select
+                                            v-model="region"
+                                            :hint="region.description"
+                                            :items="csp.regions"
+                                            item-text="code"
+                                            item-value="description"
+                                            label="Region"
+                                            persistent-hint
+                                            return-object
+                                            single-line>
+                                    </v-select>
+                                </v-flex>
+
+                            </v-layout>
+                            <v-layout row wrap align-center>
+                                <v-flex xs6>
+                                    <v-subheader>Or Add a new Region Code</v-subheader>
+                                </v-flex>
+
+                                <v-flex xs6>
+                                    <v-form>
+                                        <v-text-field
+                                                v-model="regionCode"
+                                                required>
+                                        </v-text-field>
+                                    </v-form>
+                                </v-flex>
+
+                            </v-layout>
+                        </v-container>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -44,16 +76,20 @@
             return {
                 csp: this.$route.params.csp,
                 existingUser: this.$route.params.existingUser,
-                credentials: {},
+                parameters: {},
                 credential_errors: null,
-                valid: true
+                valid: true,
+                region: this.$route.params.csp.regions[0],
+                regionCode: null
             }
         },
         methods: {
             validateCredentials: function () {
+                let regionCode = this.regionCode ? this.regionCode : this.region.code;
+                this.parameters['region'] = regionCode;
                 const payload = {
                     csp: this.csp.name,
-                    parameters: this.credentials
+                    parameters: this.parameters
                 };
                 console.log(payload);
                 this.$http.post('http://localhost:8081/x2manager/setup/credentials', payload)
@@ -63,7 +99,10 @@
                         if (this.existingUser) {
                             this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {
-                            this.$router.push({name: 'user-create', params: {csp: this.csp, credentials: this.credentials}})
+                            this.$router.push({
+                                name: 'user-create',
+                                params: {csp: this.csp, parameters: this.parameters}
+                            })
                         }
                     }, response => {
                         console.log(response);
