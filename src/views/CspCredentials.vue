@@ -92,7 +92,7 @@
                     parameters: this.parameters
                 };
                 console.log(payload);
-                this.$http.post('http://localhost:8081/x2manager/setup/credentials', payload)
+                this.$http.post('credentials', payload)
                     .then(response => {
                         console.log(response);
                         this.credential_errors = null;

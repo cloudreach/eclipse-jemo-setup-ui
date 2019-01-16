@@ -54,7 +54,7 @@
                 csp: this.csp.name,
                 parameters: this.parameters
             };
-            this.$http.post('http://localhost:8081/x2manager/setup/createuser', payload)
+            this.$http.post('createuser', payload)
                 .then(response => {
                     console.log(response);
                     this.userCreated = true;

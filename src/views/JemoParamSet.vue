@@ -58,7 +58,7 @@
             }
         },
         mounted() {
-            this.$http.get('http://localhost:8081/x2manager/setup/jemoparams/paramsets/' + this.csp.name)
+            this.$http.get('jemoparams/paramsets/' + this.csp.name)
                 .then(response => {
                     console.log(response);
                     this.paramSets = response.data;

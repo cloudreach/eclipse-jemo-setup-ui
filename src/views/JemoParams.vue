@@ -180,7 +180,7 @@
                     csp: this.csp.name,
                     parameters: JSON.parse(JSON.stringify(this.paramSet))
                 }
-                this.$http.post('http://localhost:8081/x2manager/setup/jemoparams', payload)
+                this.$http.post('jemoparams', payload)
                     .then(response => {
                         console.log(response);
                         this.hasFinished = true;

@@ -37,7 +37,7 @@
             };
         },
         mounted() {
-            this.$http.get('http://localhost:8081/x2manager/setup/init')
+            this.$http.get('init')
                 .then(response => {
                     console.log(response);
                     this.supportedCSPs = response.data

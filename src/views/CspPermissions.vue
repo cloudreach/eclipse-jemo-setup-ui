@@ -17,10 +17,10 @@
         </v-list>
 
         <template v-if="permissions_validated">
-            <h3>Setup Completed</h3>
+            <h3>Permissions Validated</h3>
             Great job! The user has all the needed permissions.
             <br/>
-            You can close this page as the setup is complete.
+            You are now redirected to review Jemo parameters.
         </template>
     </v-container>
 </template>
@@ -36,7 +36,7 @@
             }
         },
         mounted() {
-            this.$http.get('http://localhost:8081/x2manager/setup/permissions/' + this.csp.name)
+            this.$http.get('permissions/' + this.csp.name)
                 .then(response => {
                     console.log(response);
                     this.permissions_validated = true;
