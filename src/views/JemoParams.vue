@@ -63,33 +63,6 @@
                                   :label="createLabel(params.logLevel)">
                         </v-select>
 
-                        <!--<template v-for="(value, key) in textParamsToDisplay()">-->
-
-                            <!--<template v-if="key === 'eclipse.jemo.http.mode'">-->
-                                <!--<v-select v-model="paramSet[key]"-->
-                                          <!--:key="key"-->
-                                          <!--:items="httpModeRange"-->
-                                          <!--:label="key">-->
-                                <!--</v-select>-->
-                            <!--</template>-->
-
-                            <!--<template v-else-if="key === 'eclipse.jemo.location.type'">-->
-                                <!--<v-select v-model="paramSet[key]"-->
-                                          <!--:key="key"-->
-                                          <!--:items="locationTypeRange"-->
-                                          <!--:label="key">-->
-                                <!--</v-select>-->
-                            <!--</template>-->
-
-                            <!--<template v-else>-->
-                                <!--<v-text-field :key="key"-->
-                                              <!--v-model="paramSet[key]"-->
-                                              <!--:label="key"-->
-                                              <!--required>-->
-                                <!--</v-text-field>-->
-                            <!--</template>-->
-
-                        <!--</template>-->
                     </v-form>
 
                 </v-card-text>
@@ -137,8 +110,8 @@
                         range: ['CLOUD', 'ON-PREMISE'],
                     },
                     httpPort: {
-                        name: 'eclipse.jemo.http.port',
-                        description: 'the HTTP port'
+                        name: 'eclipse.jemo.https.port',
+                        description: 'the HTTPS port'
                     },
                     httpMode: {
                         name: 'eclipse.jemo.http.mode',
