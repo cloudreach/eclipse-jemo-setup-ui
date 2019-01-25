@@ -83,8 +83,14 @@
                 </v-card-title>
                 <v-card-text>
                     Great job!
-                    You can close this page as the setup is complete.
+                    If you wish you can configure a production environment by clicking on the button below.
+                    Otherwise you can close this page.
                 </v-card-text>
+                <v-card-actions>
+                    <v-btn @click="configureProdEnv">
+                        Configure a production environment
+                    </v-btn>
+                </v-card-actions>
             </v-card>
 
         </v-layout>
@@ -96,7 +102,9 @@
         data() {
             return {
                 csp: this.$route.params.csp,
+                isAdminUserLogged: this.$route.params.isAdminUserLogged,
                 paramSet: this.$route.params.paramSet,
+                paramSets: this.$route.params.paramSets,
                 hasFinished: false,
                 valid: true,
                 params: {
@@ -164,6 +172,11 @@
             },
             createLabel(param) {
                 return param.name + ' ('+ param.description + ')';
+            },
+            configureProdEnv() {
+                this.$router.push({
+                    name: 'prod-conf', params: {csp: this.csp, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged}
+                })
             }
         }
     }

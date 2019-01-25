@@ -12,6 +12,8 @@ export default new Router({
         {path: '/csp-perm', name: 'csp-perm', props: true, component: () => import('./views/CspPermissions.vue')},
         {path: '/user/create', name: 'user-create', props: true, component: () => import('./views/CreateUser.vue')},
         {path: '/jemo/param-set', name: 'jemo-param-set', props: true, component: () => import('./views/JemoParamSet.vue')},
-        {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')}
+        {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')},
+        {path: '/prod/config', name: 'prod-conf', props: true, component: () => import('./views/ProdConf.vue')},
+        {path: '/cluster/create', name: 'create-cluster', props: true, component: () => import('./views/CreateCluster.vue')}
     ]
 })

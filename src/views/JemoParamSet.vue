@@ -52,6 +52,7 @@
         data() {
             return {
                 csp: this.$route.params.csp,
+                isAdminUserLogged: this.$route.params.isAdminUserLogged,
                 paramSets: null,
                 existingParamSet: null,
                 newParamSet: null
@@ -85,11 +86,12 @@
                         'eclipse.jemo.log.level': 'INFO',
                         'name': this.newParamSet
                     };
+                    this.paramSets.push(paramSet);
                 } else {
                     paramSet = this.existingParamSet;
                 }
                 this.$router.push({
-                    name: 'jemo-params', params: {csp: this.csp, paramSet: paramSet}
+                    name: 'jemo-params', params: {csp: this.csp, paramSet: paramSet, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged }
                 })
             }
         }

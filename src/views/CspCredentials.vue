@@ -96,12 +96,13 @@
                     .then(response => {
                         console.log(response);
                         this.credential_errors = null;
+                        this.csp['region'] = regionCode;
                         if (this.existingUser) {
                             this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {
                             this.$router.push({
                                 name: 'user-create',
-                                params: {csp: this.csp, parameters: this.parameters}
+                                params: {csp: this.csp, parameters: this.parameters, isAdminUserLogged: true}
                             })
                         }
                     }, response => {

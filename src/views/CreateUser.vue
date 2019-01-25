@@ -23,17 +23,19 @@
             </div>
         </div>
 
-        <!--<div v-if="userCreated">-->
-            <!--<h3>Setup Completed</h3>-->
-            <!--Great job! The user 'jemo-user' is created and has all the needed permissions.-->
-            <!--<br/>-->
+        <div v-if="userCreated">
+            <h3>Setup Completed</h3>
+            Great job! The user 'jemo-user' is created and has all the needed permissions.
+            <br/>
 
-            <!--<div>-->
-                <!--<pre>{{ terraformResult | pretty }}</pre>-->
-            <!--</div>-->
+            <div>
+                <pre>{{ terraformResult | pretty }}</pre>
+            </div>
 
-            <!--You can close this page as the setup is complete.-->
-        <!--</div>-->
+            Please, click the following button to input Jemo parameters<br/>
+
+            <v-btn :to="{name: 'jemo-param-set', params: {csp: this.csp, isAdminUserLogged: true}}">Next</v-btn>
+        </div>
 
     </v-container>
 </template>
@@ -60,7 +62,6 @@
                     this.userCreated = true;
                     this.error = null;
                     this.terraformResult = response.data;
-                    this.$router.push({name: 'jemo-param-set', params: {csp: this.csp}})
                 }, response => {
                     console.log(response);
                     this.error = response.data;
