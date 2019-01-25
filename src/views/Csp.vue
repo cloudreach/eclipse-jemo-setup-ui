@@ -78,6 +78,13 @@
             return {
                 csp: this.$route.params.csp,
             }
+        },
+        watch: {
+            '$route.params.csp' (to) {
+                if (to) {
+                    this.csp = to;
+                }
+            }
         }
     }
 </script>

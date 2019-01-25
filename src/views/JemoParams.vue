@@ -155,6 +155,17 @@
 
             }
         },
+        watch: {
+            '$route'(to) {
+                if (to.name === 'jemo-params') {
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.isAdminUserLogged = to.params.isAdminUserLogged ? to.params.isAdminUserLogged : this.isAdminUserLogged;
+                    this.paramSet = to.params.paramSet ? to.params.paramSet : this.paramSet;
+                    this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
+                    this.hasFinished = false;
+                }
+            }
+        },
         methods: {
             sendParameters: function () {
                 let payload = {
@@ -171,11 +182,12 @@
                     });
             },
             createLabel(param) {
-                return param.name + ' ('+ param.description + ')';
+                return param.name + ' (' + param.description + ')';
             },
             configureProdEnv() {
                 this.$router.push({
-                    name: 'prod-conf', params: {csp: this.csp, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged}
+                    name: 'prod-conf',
+                    params: {csp: this.csp, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged}
                 })
             }
         }

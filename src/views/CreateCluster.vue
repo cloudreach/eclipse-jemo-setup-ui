@@ -65,7 +65,7 @@
                 <li>kubectl delete -f kubernetes/jemo-statefulset.yaml</li>
                 <li>kubectl delete svc jemo</li>
                 <li>kubectl delete -n kube-system configmap aws-auth</li>
-                <li>terraform destroy</li>
+                <li>terraform destroy -var-file=cluster.tfvars</li>
 
             </ul>
         </div>
@@ -87,40 +87,54 @@
                 timer: null
             }
         },
-        mounted() {
-            const payload = {
-                csp: this.csp.name,
-                parameters: this.parameters
-            };
-
-            if (this.downloadFormsOnly) {
-                this.$http.post('cluster/download', payload, {responseType: 'blob'})
-                    .then(response => {
-                        return response.blob();
-                    }).then(blob => {
-                    const a = document.createElement("a");
-                    document.body.appendChild(a);
-                    const url = window.URL.createObjectURL(blob);
-                    a.href = url;
-                    a.download = 'cluster.zip';
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    a.remove();
-                    this.terraformFilesDownloaded = true;
-                });
-            } else {
-                this.$http.post('cluster', payload)
-                    .then(response => {
-                        console.log(response);
-                        this.timer = setInterval(this.pollForClusterCreationResult, 30000);
-                    }, response => {
-                        console.log(response);
-                        this.error = response.data;
-                    });
+        watch: {
+            '$route'(to) {
+                if (to.name === 'create-cluster') {
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
+                    this.downloadFormsOnly = to.params.downloadFormsOnly ? to.params.downloadFormsOnly : this.downloadFormsOnly;
+                    this.clusterCreated = false;
+                    console.log('$route change in create-cluster');
+                }
             }
-
+        },
+        mounted() {
+            console.log('mounted');
+            this.createCluster();
         },
         methods: {
+            createCluster() {
+                const payload = {
+                    csp: this.csp.name,
+                    parameters: this.parameters
+                };
+
+                if (this.downloadFormsOnly) {
+                    this.$http.post('cluster/download', payload, {responseType: 'blob'})
+                        .then(response => {
+                            return response.blob();
+                        }).then(blob => {
+                        const a = document.createElement("a");
+                        document.body.appendChild(a);
+                        const url = window.URL.createObjectURL(blob);
+                        a.href = url;
+                        a.download = 'cluster.zip';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                        this.terraformFilesDownloaded = true;
+                    });
+                } else {
+                    this.$http.post('cluster', payload)
+                        .then(response => {
+                            console.log(response);
+                            this.timer = setInterval(this.pollForClusterCreationResult, 30000);
+                        }, response => {
+                            console.log(response);
+                            this.error = response.data;
+                        });
+                }
+            },
             pollForClusterCreationResult() {
                 this.$http.get('cluster/result')
                     .then(response => {
