@@ -75,7 +75,7 @@
                 let paramSet = null;
                 if (this.newParamSet) {
                     paramSet = {
-                        'eclipse.jemo.location': this.$route.params.csp.name === 'MEMORY' ? 'JEMO' : this.$route.params.csp.name,
+                        'eclipse.jemo.location': this.csp.name === 'MEMORY' ? 'JEMO' : this.csp.name,
                         'eclipse.jemo.https.port': '8080',
                         'eclipse.jemo.http.mode': 'HTTP',
                         'eclipse.jemo.module.whitelist': '',

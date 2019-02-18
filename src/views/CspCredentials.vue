@@ -83,6 +83,14 @@
                 regionCode: null
             }
         },
+        watch: {
+            '$route.params.csp' (to) {
+                if (to) {
+                    this.csp = to;
+                    this.region = this.$route.params.csp.regions[0];
+                }
+            }
+        },
         methods: {
             validateCredentials: function () {
                 let regionCode = this.regionCode ? this.regionCode : this.region.code;

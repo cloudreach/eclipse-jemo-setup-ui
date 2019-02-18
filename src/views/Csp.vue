@@ -62,7 +62,7 @@
                     command.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" href="/x2manager/setup/terraform/jemo-template.tf" download>
+                    <v-btn class="mx-2" @click="downloadTemplates()">
                         Download Terraform Template
                     </v-btn>
                 </v-card-actions>
@@ -84,6 +84,27 @@
                 if (to) {
                     this.csp = to;
                 }
+            }
+        },
+        methods: {
+            downloadTemplates() {
+                const payload = {
+                    csp: this.csp.name,
+                };
+                this.$http.post('install/download', payload, {responseType: 'blob'})
+                    .then(response => {
+                        return response.blob();
+                    }).then(blob => {
+                    const a = document.createElement("a");
+                    document.body.appendChild(a);
+                    const url = window.URL.createObjectURL(blob);
+                    a.href = url;
+                    a.download = 'install.zip';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                    this.terraformFilesDownloaded = true;
+                });
             }
         }
     }

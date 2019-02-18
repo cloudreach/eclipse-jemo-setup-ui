@@ -4,6 +4,9 @@
         <div v-if="!downloadFormsOnly && !clusterCreated && !error">
             <h3>Please wait while Jemo creates the cluster. This can take up to 15 minutes.</h3>
             <v-progress-linear :indeterminate="true"></v-progress-linear>
+            <div v-if="clusterCreationResponse">
+                <pre>{{ clusterCreationResponse.output }}</pre>
+            </div>
         </div>
 
         <div v-if="error">
@@ -35,39 +38,7 @@
         </div>
 
         <div v-if="terraformFilesDownloaded">
-            <h3>Please follow the instructions:</h3>
-            <ul>
-                <li>unzip cluster.zip</li>
-                <li>cd cluster</li>
-                <li>terraform init -var-file=cluster.tfvars</li>
-                <li>terraform plan -var-file=cluster.tfvars</li>
-                <li>terraform apply -var-file=cluster.tfvars</li>
-            </ul>
-            <br/>
-            At this stage you should have the cluster up and running. Now you need to instantiate the kubernetes pods. Run:
-            <ul>
-                <li>aws eks update-kubeconfig --name jemo-cluster</li>
-                <li>kubectl create -f kubernetes/jemo-statefulset.yaml</li>
-                <li>kubectl create -f kubernetes/jemo-svc.yaml</li>
-            </ul>
-
-            <br/>
-            Finally you need to allow worker nodes to join the cluster. Run:
-            <ul>
-                <li>terraform output config_map_aws_auth > config-map.yaml</li>
-                <li>kubectl apply -f config-map.yaml</li>
-            </ul>
-
-            <br/>
-
-            To delete everything, run:
-            <ul>
-                <li>kubectl delete -f kubernetes/jemo-statefulset.yaml</li>
-                <li>kubectl delete svc jemo</li>
-                <li>kubectl delete -n kube-system configmap aws-auth</li>
-                <li>terraform destroy -var-file=cluster.tfvars</li>
-
-            </ul>
+            <h3>Please unzip the downloaded file, open the file 'README.txt' and follow the instructions.</h3>
         </div>
 
     </v-container>
@@ -92,9 +63,10 @@
                 if (to.name === 'create-cluster') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
                     this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
-                    this.downloadFormsOnly = to.params.downloadFormsOnly ? to.params.downloadFormsOnly : this.downloadFormsOnly;
+                    this.downloadFormsOnly = to.params.downloadFormsOnly;
                     this.clusterCreated = false;
                     console.log('$route change in create-cluster');
+                    this.createCluster();
                 }
             }
         },
@@ -139,6 +111,7 @@
                 this.$http.get('cluster/result')
                     .then(response => {
                         console.log(response);
+                        this.clusterCreationResponse = response.data;
                         if (response.data.status === 'FINISHED') {
                             clearInterval(this.timer);
                             if (response.data.error) {
@@ -146,13 +119,12 @@
                             } else {
                                 this.clusterCreated = true;
                                 this.error = null;
-                                this.clusterCreationResponse = response.data;
                             }
                         }
                     }, response => {
                         console.log(response);
-                        this.error = response.data.error;
-                        alert(response.data.error);
+                        this.error = response.data;
+                        alert(response.data);
                     });
             }
         },

@@ -4,6 +4,9 @@
         <div v-if="!userCreated && !error">
             <h3>Please wait while Jemo creates the user.</h3>
             <v-progress-linear :indeterminate="true"></v-progress-linear>
+            <div v-if="terraformOutput">
+                <pre>{{terraformOutput}}</pre>
+            </div>
         </div>
 
         <div v-if="error">
@@ -48,7 +51,8 @@
                 parameters: this.$route.params.parameters,
                 userCreated: false,
                 error: null,
-                terraformResult: null
+                terraformResult: null,
+                terraformOutput: null
             }
         },
         mounted() {
@@ -59,13 +63,34 @@
             this.$http.post('createuser', payload)
                 .then(response => {
                     console.log(response);
-                    this.userCreated = true;
-                    this.error = null;
-                    this.terraformResult = response.data;
+                    this.timer = setInterval(this.pollForUserCreationResult, 10000);
                 }, response => {
                     console.log(response);
                     this.error = response.data;
                 });
+        },
+        methods: {
+            pollForUserCreationResult() {
+                this.$http.get('createuser/result/' + this.csp.name + "/" + this.parameters.region)
+                    .then(response => {
+                        console.log(response);
+                        this.terraformOutput= response.data.output;
+                        if (response.data.status === 'FINISHED') {
+                            clearInterval(this.timer);
+                            if (response.data.error) {
+                                this.error = response.data.error;
+                            } else {
+                                this.userCreated = true;
+                                this.error = null;
+                                this.terraformResult = response.data.terraformResult;
+                            }
+                        }
+                    }, response => {
+                        console.log(response);
+                        this.error = response.data;
+                        alert(response.data);
+                    });
+            }
         },
         filters: {
             pretty: function (value) {
