@@ -6,6 +6,9 @@
             <v-progress-linear :indeterminate="true"></v-progress-linear>
             <div v-if="clusterCreationResponse">
                 <pre>{{ clusterCreationResponse.output }}</pre>
+                <div class="pa-3">
+                    <v-progress-circular indeterminate :size="16"></v-progress-circular>
+                </div>
             </div>
         </div>
 
@@ -100,7 +103,7 @@
                     this.$http.post('cluster', payload)
                         .then(response => {
                             console.log(response);
-                            this.timer = setInterval(this.pollForClusterCreationResult, 30000);
+                            this.timer = setInterval(this.pollForClusterCreationResult, 10000);
                         }, response => {
                             console.log(response);
                             this.error = response.data;

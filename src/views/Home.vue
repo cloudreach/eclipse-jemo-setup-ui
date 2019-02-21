@@ -37,7 +37,7 @@
                 supportedCSPs: []
             };
         },
-        mounted() {
+        created() {
             this.$http.get('init')
                 .then(response => {
                     console.log(response);

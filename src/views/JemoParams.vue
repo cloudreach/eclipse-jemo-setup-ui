@@ -67,7 +67,7 @@
 
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="sendParameters">
+                    <v-btn @click="sendParameters" :loading="loading" color="primary">
                         Submit
                     </v-btn>
                 </v-card-actions>
@@ -87,7 +87,7 @@
                     Otherwise you can close this page.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="configureProdEnv">
+                    <v-btn @click="configureProdEnv" color="primary">
                         Configure a production environment
                     </v-btn>
                 </v-card-actions>
@@ -102,11 +102,11 @@
         data() {
             return {
                 csp: this.$route.params.csp,
-                isAdminUserLogged: this.$route.params.isAdminUserLogged,
                 paramSet: this.$route.params.paramSet,
                 paramSets: this.$route.params.paramSets,
                 hasFinished: false,
                 valid: true,
+                loading: false,
                 params: {
                     location: {
                         name: 'eclipse.jemo.location',
@@ -159,15 +159,17 @@
             '$route'(to) {
                 if (to.name === 'jemo-params') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
-                    this.isAdminUserLogged = to.params.isAdminUserLogged ? to.params.isAdminUserLogged : this.isAdminUserLogged;
                     this.paramSet = to.params.paramSet ? to.params.paramSet : this.paramSet;
                     this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
                     this.hasFinished = false;
+                    this.loading = false;
                 }
             }
         },
         methods: {
             sendParameters: function () {
+                this.loading = true;
+
                 let payload = {
                     csp: this.csp.name,
                     parameters: JSON.parse(JSON.stringify(this.paramSet))
@@ -187,7 +189,7 @@
             configureProdEnv() {
                 this.$router.push({
                     name: 'prod-conf',
-                    params: {csp: this.csp, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged}
+                    params: {csp: this.csp, paramSets: this.paramSets}
                 })
             }
         }

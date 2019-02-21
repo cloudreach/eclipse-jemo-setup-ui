@@ -17,7 +17,7 @@
                     is your responsibility to add these permissions and retry to validate them.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: true}}">
+                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: true}}" color="primary">
                         I have a user
                     </v-btn>
                 </v-card-actions>
@@ -39,7 +39,7 @@
                     (e.g. user/role/group/policy creation) and runs terraform.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: false}}">
+                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: false}}" color="secondary">
                         Jemo User Setup
                     </v-btn>
                 </v-card-actions>
@@ -62,7 +62,7 @@
                     command.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" @click="downloadTemplates()">
+                    <v-btn class="mx-2" @click="downloadTemplates()" color="error">
                         Download Terraform Template
                     </v-btn>
                 </v-card-actions>
@@ -103,7 +103,6 @@
                     a.click();
                     window.URL.revokeObjectURL(url);
                     a.remove();
-                    this.terraformFilesDownloaded = true;
                 });
             }
         }

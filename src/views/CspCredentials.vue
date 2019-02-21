@@ -1,72 +1,107 @@
 <template>
 
-    <v-container grid-list-md>
-        <v-layout row wrap>
+    <v-container>
+        <v-container grid-list-md>
+            <v-layout row wrap>
 
-            <v-card flat class="text-xs-center ma-3">
-                <v-card-title primary-title>
-                    <div>
-                        <h3 class="headline mb-0">
-                            {{csp.name + (existingUser ? ' existing user credentials' : ' admin user credentials')}}
-                        </h3>
-                    </div>
+                <v-card flat class="text-xs-center ma-3">
+                    <v-card-title primary-title>
+                        <div>
+                            <h3 class="headline mb-0">
+                                {{csp.name + (existingUser ? ' existing user credentials' : ' admin user credentials')}}
+                            </h3>
+                        </div>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <v-form ref="form" class="mx-4">
+                            <v-text-field v-for="credential in csp.requiredCredentials" :key="credential"
+                                          v-model="parameters[credential]"
+                                          :label="credential"
+                                          required>
+                            </v-text-field>
+
+                            <v-container fluid>
+                                <v-layout row wrap align-center>
+                                    <v-flex xs6>
+                                        <v-subheader>Select Region</v-subheader>
+                                    </v-flex>
+
+                                    <v-flex xs6>
+                                        <v-select
+                                                v-model="region"
+                                                :hint="region.description"
+                                                :items="csp.regions"
+                                                item-text="code"
+                                                item-value="description"
+                                                label="Region"
+                                                persistent-hint
+                                                return-object
+                                                single-line>
+                                        </v-select>
+                                    </v-flex>
+
+                                </v-layout>
+                                <v-layout row wrap align-center>
+                                    <v-flex xs6>
+                                        <v-subheader>Or Add a new Region Code</v-subheader>
+                                    </v-flex>
+
+                                    <v-flex xs6>
+                                        <v-form>
+                                            <v-text-field
+                                                    v-model="regionCode"
+                                                    required>
+                                            </v-text-field>
+                                        </v-form>
+                                    </v-flex>
+
+                                </v-layout>
+                            </v-container>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn class="mx-4" @click="validateCredentials" color="primary">
+                            Submit
+                        </v-btn>
+                        <v-btn class="mx-4" @click="admin_user_info_dialog = true" color="primary">
+                            I don't have this info
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+
+            </v-layout>
+        </v-container>
+
+        <v-dialog v-model="permissions_error_dialog" persistent max-width="600px" class="mx-1" scrollable>
+            <v-list>
+                <h3>The {{csp.name}} user does not have the following required permissions:</h3>
+
+                <v-list-tile v-for="error in permission_errors" :key="error">
+                    <v-list-tile-content>
+                        <v-list-tile-title v-text="error"></v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+            </v-list>
+            <v-btn @click="permissions_error_dialog = false">Close</v-btn>
+        </v-dialog>
+
+        <v-dialog v-model="admin_user_info_dialog" persistent max-width="800px" class="mx-1">
+            <v-card>
+                <v-card-title>
+                            {{csp.adminUserCreationInstructions.description}}
+                    Steps to follow:
                 </v-card-title>
 
-                <v-card-text>
-                    <v-form ref="form" class="mx-4" v-model="valid">
-                        <v-text-field v-for="credential in csp.requiredCredentials" :key="credential"
-                                      v-model="parameters[credential]"
-                                      :label="credential"
-                                      required>
-                        </v-text-field>
-
-                        <v-container fluid>
-                            <v-layout row wrap align-center>
-                                <v-flex xs6>
-                                    <v-subheader>Select Region</v-subheader>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-select
-                                            v-model="region"
-                                            :hint="region.description"
-                                            :items="csp.regions"
-                                            item-text="code"
-                                            item-value="description"
-                                            label="Region"
-                                            persistent-hint
-                                            return-object
-                                            single-line>
-                                    </v-select>
-                                </v-flex>
-
-                            </v-layout>
-                            <v-layout row wrap align-center>
-                                <v-flex xs6>
-                                    <v-subheader>Or Add a new Region Code</v-subheader>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-form>
-                                        <v-text-field
-                                                v-model="regionCode"
-                                                required>
-                                        </v-text-field>
-                                    </v-form>
-                                </v-flex>
-
-                            </v-layout>
-                        </v-container>
-                    </v-form>
+                <v-card-text v-for="step in csp.adminUserCreationInstructions.steps" :key="step">
+                    {{step}}
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-4" @click="validateCredentials">
-                        Submit
-                    </v-btn>
+                    <v-btn @click="admin_user_info_dialog = false" color="primary">Close</v-btn>
                 </v-card-actions>
             </v-card>
+        </v-dialog>
 
-        </v-layout>
     </v-container>
 </template>
 
@@ -78,16 +113,24 @@
                 existingUser: this.$route.params.existingUser,
                 parameters: {},
                 credential_errors: null,
-                valid: true,
                 region: this.$route.params.csp.regions[0],
-                regionCode: null
+                regionCode: null,
+                permission_errors: null,
+                permissions_validated: false,
+                permissions_error_dialog: false,
+                admin_user_info_dialog: false
             }
         },
         watch: {
-            '$route.params.csp' (to) {
-                if (to) {
-                    this.csp = to;
-                    this.region = this.$route.params.csp.regions[0];
+            '$route'(to) {
+                if (to && to.name === 'csp-cred') {
+                    console.log('watch');
+                    console.log(to.params.csp);
+                    console.log(to.params.existingUser);
+                    console.log(to.params.existingUser);
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.existingUser = to.params.existingUser;
+                    this.region = to.params.csp.regions ? to.params.csp.regions[0] : to.params.csp.regions[0];
                 }
             }
         },
@@ -106,17 +149,40 @@
                         this.credential_errors = null;
                         this.csp['region'] = regionCode;
                         if (this.existingUser) {
-                            this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
+                            this.validatePermissions();
+                            // this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {
                             this.$router.push({
                                 name: 'user-create',
-                                params: {csp: this.csp, parameters: this.parameters, isAdminUserLogged: true}
+                                params: {csp: this.csp, parameters: this.parameters}
                             })
                         }
                     }, response => {
                         console.log(response);
                         alert(response.data);
                         this.credential_errors = response.data;
+                    });
+            },
+            validatePermissions() {
+                this.$http.get('permissions/' + this.csp.name)
+                    .then(response => {
+                        console.log(response);
+                        this.permissions_validated = true;
+                        this.redirectToParamSet();
+                    }, response => {
+                        console.log(response);
+                        this.permission_errors = response.data;
+                        this.permissions_error_dialog = true;
+                    });
+            },
+            redirectToParamSet() {
+                this.$http.get('jemoparams/paramsets/' + this.csp.name)
+                    .then(response => {
+                        console.log(response);
+                        this.$router.push({name: 'jemo-param-set', params: {csp: this.csp, paramSets: response.data}})
+                    }, response => {
+                        console.log(response);
+                        alert(response.data);
                     });
             }
         }

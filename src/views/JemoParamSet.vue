@@ -38,7 +38,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-btn class="mx-4" @click="changeParams">
+                <v-btn class="mx-4" @click="changeParams" color="primary">
                     Submit
                 </v-btn>
 
@@ -52,23 +52,23 @@
         data() {
             return {
                 csp: this.$route.params.csp,
-                isAdminUserLogged: this.$route.params.isAdminUserLogged,
-                paramSets: null,
+                paramSets: this.$route.params.paramSets,
                 existingParamSet: null,
                 newParamSet: null
             }
         },
-        mounted() {
-            this.$http.get('jemoparams/paramsets/' + this.csp.name)
-                .then(response => {
-                    console.log(response);
-                    this.paramSets = response.data;
-                    if (this.paramSets.length > 0) {
-                        this.existingParamSet = this.paramSets[0];
-                    }
-                }, response => {
-                    console.log(response);
-                });
+        created() {
+            if (this.paramSets.length > 0) {
+                this.existingParamSet = this.paramSets[0];
+            }
+        },
+        watch: {
+            '$route'(to) {
+                if (to.name === 'jemo-param-set') {
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
+                }
+            }
         },
         methods: {
             changeParams: function () {
@@ -91,7 +91,7 @@
                     paramSet = this.existingParamSet;
                 }
                 this.$router.push({
-                    name: 'jemo-params', params: {csp: this.csp, paramSet: paramSet, paramSets: this.paramSets, isAdminUserLogged: this.isAdminUserLogged }
+                    name: 'jemo-params', params: {csp: this.csp, paramSet: paramSet, paramSets: this.paramSets}
                 })
             }
         }

@@ -1,6 +1,6 @@
 <template>
 
-    <v-container grid-list-md>
+    <v-container v-if="params" grid-list-md>
         <v-layout row wrap>
 
             <v-card class="text-md-center ma-3">
@@ -93,10 +93,7 @@
 
                 <v-card-actions>
                     <v-layout row justify-center>
-                        <v-btn v-if="isAdminUserLogged" @click="deployCluster(false)" color="primary">Create Cluster
-                        </v-btn>
-
-                        <v-dialog v-else v-model="dialog" persistent max-width="600px" class="mx-1">
+                        <v-dialog v-model="dialog" persistent max-width="600px" class="mx-1">
                             <v-btn slot="activator" color="primary" dark>Create Cluster</v-btn>
                             <v-card>
                                 <v-card-title>
@@ -116,7 +113,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" flat @click="dialog = false">Cancel</v-btn>
+                                    <v-btn color="blue darken-1" flat @click="permissions_error_dialog = false">Cancel</v-btn>
                                     <v-btn color="blue darken-1" flat @click="validateCredentials">OK</v-btn>
                                 </v-card-actions>
 
@@ -172,11 +169,10 @@
             return {
                 csp: this.$route.params.csp,
                 paramSets: this.$route.params.paramSets,
-                isAdminUserLogged: this.$route.params.isAdminUserLogged,
                 valid: true,
                 clusterCreated: false,
                 terraformResult: null,
-                dialog: false,
+                permissions_error_dialog: false,
                 existingNetworks: null,
                 selectedNetwork: null,
                 policies: null,
@@ -277,7 +273,7 @@
                 })
             },
         },
-        mounted() {
+        created() {
             this.$http.get('cluster/params/' + this.csp.name)
                 .then(response => {
                     console.log(response);

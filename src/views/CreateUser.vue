@@ -6,6 +6,9 @@
             <v-progress-linear :indeterminate="true"></v-progress-linear>
             <div v-if="terraformOutput">
                 <pre>{{terraformOutput}}</pre>
+                <div class="pa-3">
+                    <v-progress-circular indeterminate :size="16"></v-progress-circular>
+                </div>
             </div>
         </div>
 
@@ -37,7 +40,7 @@
 
             Please, click the following button to input Jemo parameters<br/>
 
-            <v-btn :to="{name: 'jemo-param-set', params: {csp: this.csp, isAdminUserLogged: true}}">Next</v-btn>
+            <v-btn :to="{name: 'jemo-param-set', params: {csp: this.csp}}">Next</v-btn>
         </div>
 
     </v-container>
