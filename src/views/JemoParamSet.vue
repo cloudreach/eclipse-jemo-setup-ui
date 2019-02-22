@@ -57,8 +57,8 @@
                 newParamSet: null
             }
         },
-        created() {
-            if (this.paramSets.length > 0) {
+        mounted() {
+            if (this.paramSets && this.paramSets.length > 0) {
                 this.existingParamSet = this.paramSets[0];
             }
         },

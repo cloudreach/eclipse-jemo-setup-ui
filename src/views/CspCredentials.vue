@@ -64,7 +64,7 @@
                         <v-btn class="mx-4" @click="validateCredentials" color="primary">
                             Submit
                         </v-btn>
-                        <v-btn class="mx-4" @click="admin_user_info_dialog = true" color="primary">
+                        <v-btn v-if="!existingUser" class="mx-4" @click="admin_user_info_dialog = true" color="secondary">
                             I don't have this info
                         </v-btn>
                     </v-card-actions>
@@ -124,13 +124,9 @@
         watch: {
             '$route'(to) {
                 if (to && to.name === 'csp-cred') {
-                    console.log('watch');
-                    console.log(to.params.csp);
-                    console.log(to.params.existingUser);
-                    console.log(to.params.existingUser);
                     this.csp = to.params.csp ? to.params.csp : this.csp;
                     this.existingUser = to.params.existingUser;
-                    this.region = to.params.csp.regions ? to.params.csp.regions[0] : to.params.csp.regions[0];
+                    this.region = to.params.csp.regions ? to.params.csp.regions[0] : this.region;
                 }
             }
         },

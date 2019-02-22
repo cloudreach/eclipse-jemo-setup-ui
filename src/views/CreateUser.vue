@@ -38,9 +38,9 @@
                 <pre>{{ terraformResult | pretty }}</pre>
             </div>
 
-            Please, click the following button to input Jemo parameters<br/>
+            Please, click the following button to input Jemo parameters<br/><br/>
 
-            <v-btn :to="{name: 'jemo-param-set', params: {csp: this.csp}}">Next</v-btn>
+            <v-btn @click="redirectToParamSet" color="primary">Next</v-btn>
         </div>
 
     </v-container>
@@ -91,6 +91,16 @@
                     }, response => {
                         console.log(response);
                         this.error = response.data;
+                        alert(response.data);
+                    });
+            },
+            redirectToParamSet() {
+                this.$http.get('jemoparams/paramsets/' + this.csp.name)
+                    .then(response => {
+                        console.log(response);
+                        this.$router.push({name: 'jemo-param-set', params: {csp: this.csp, paramSets: response.data}})
+                    }, response => {
+                        console.log(response);
                         alert(response.data);
                     });
             }

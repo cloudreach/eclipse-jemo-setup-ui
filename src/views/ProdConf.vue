@@ -93,7 +93,7 @@
 
                 <v-card-actions>
                     <v-layout row justify-center>
-                        <v-dialog v-model="dialog" persistent max-width="600px" class="mx-1">
+                        <v-dialog v-model="permissions_error_dialog" persistent max-width="600px" class="mx-1">
                             <v-btn slot="activator" color="primary" dark>Create Cluster</v-btn>
                             <v-card>
                                 <v-card-title>
@@ -211,7 +211,7 @@
                 this.$http.post('credentials', payload)
                     .then(response => {
                         console.log(response);
-                        this.dialog = false;
+                        this.permissions_error_dialog = false;
                         this.deployCluster(false);
                     }, response => {
                         console.log(response);
