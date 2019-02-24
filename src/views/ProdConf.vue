@@ -306,6 +306,14 @@
                 });
 
             this.paramSets.forEach(paramSet => this.instanceParamSets[paramSet.name] = 0);
-        }
+        },
+        watch: {
+            '$route'(to) {
+                if (to.name === 'prod-conf') {
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
+                }
+            }
+        },
     }
 </script>
