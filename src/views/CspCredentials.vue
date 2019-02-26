@@ -125,8 +125,8 @@
             '$route'(to) {
                 if (to && to.name === 'csp-cred') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
-                    this.existingUser = to.params.existingUser;
-                    this.region = to.params.csp.regions ? to.params.csp.regions[0] : this.region;
+                    this.existingUser = typeof to.params.existingUser !== undefined ? to.params.existingUser : this.params.existingUser;
+                    this.region = to.params.csp && to.params.csp.regions ? to.params.csp.regions[0] : this.region;
                 }
             }
         },

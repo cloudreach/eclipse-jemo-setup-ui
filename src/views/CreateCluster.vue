@@ -21,8 +21,7 @@
                 or it is not in the path. (e.g. run: terraform -version).
                 <br/>
                 <br/>
-                The server error was:
-                <pre>{{error.message}}</pre>
+                <v-btn @click="createCluster(true)" color="primary" :loading="loading">Fixed</v-btn>
             </div>
             <div v-else>
                 <h3>Terraform failed to create the cluster. The following error occurred:</h3>
@@ -58,7 +57,8 @@
                 error: null,
                 clusterCreationResponse: null,
                 terraformFilesDownloaded: false,
-                timer: null
+                timer: null,
+                loading: false
             }
         },
         watch: {
@@ -68,17 +68,18 @@
                     this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
                     this.downloadFormsOnly = to.params.downloadFormsOnly;
                     this.clusterCreated = false;
-                    console.log('$route change in create-cluster');
-                    this.createCluster();
+                    this.loading = false;
+                    this.createCluster(false);
                 }
             }
         },
         mounted() {
             console.log('mounted');
-            this.createCluster();
+            this.createCluster(false);
         },
         methods: {
-            createCluster() {
+            createCluster(fixedPressed) {
+                this.loading = fixedPressed;
                 const payload = {
                     csp: this.csp.name,
                     parameters: this.parameters
@@ -103,10 +104,12 @@
                     this.$http.post('cluster', payload)
                         .then(response => {
                             console.log(response);
+                            this.error = null;
                             this.timer = setInterval(this.pollForClusterCreationResult, 10000);
                         }, response => {
                             console.log(response);
                             this.error = response.data;
+                            this.loading = false;
                         });
                 }
             },

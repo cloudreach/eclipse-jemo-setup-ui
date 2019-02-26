@@ -19,9 +19,10 @@
                     href="https://learn.hashicorp.com/terraform/getting-started/install.html" target="_blank">Installation
                 instructions</a>),
                 or it is not in the path. (e.g. run: terraform -version).
+
                 <br/>
                 <br/>
-                The server error was: <pre>{{error.message}}</pre>
+                <v-btn @click="createUser" color="primary" :loading="loading">Fixed</v-btn>
             </div>
             <div v-else>
                 <h3>Terraform failed to create the user. The following error occurred:</h3>
@@ -55,24 +56,43 @@
                 userCreated: false,
                 error: null,
                 terraformResult: null,
-                terraformOutput: null
+                terraformOutput: null,
+                loading: false
+            }
+        },
+        watch: {
+            '$route'(to) {
+                if (to.name === 'user-create') {
+                    this.csp = to.params.csp ? to.params.csp : this.csp;
+                    this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
+                    this.userCreated = false;
+                    this.loading = false;
+                    this.error = null;
+                    this.terraformResult = null;
+                    this.terraformOutput = null;
+                    this.createUser();
+                }
             }
         },
         mounted() {
-            const payload = {
-                csp: this.csp.name,
-                parameters: this.parameters
-            };
-            this.$http.post('createuser', payload)
-                .then(response => {
-                    console.log(response);
-                    this.timer = setInterval(this.pollForUserCreationResult, 10000);
-                }, response => {
-                    console.log(response);
-                    this.error = response.data;
-                });
+            this.createUser();
         },
         methods: {
+            createUser() {
+                this.loading = true;
+                const payload = {
+                    csp: this.csp.name,
+                    parameters: this.parameters
+                };
+                this.$http.post('createuser', payload)
+                    .then(response => {
+                        console.log(response);
+                        this.timer = setInterval(this.pollForUserCreationResult, 10000);
+                    }, response => {
+                        console.log(response);
+                        this.error = response.data;
+                    });
+            },
             pollForUserCreationResult() {
                 this.$http.get('createuser/result/' + this.csp.name + "/" + this.parameters.region)
                     .then(response => {
