@@ -97,7 +97,7 @@
                             <v-btn slot="activator" color="primary" dark>Create Cluster</v-btn>
                             <v-card>
                                 <v-card-title>
-                                    <span class="headline">Admin credentials are needed to run Terraform</span>
+                                    <span class="headline">Terraform user credentials</span>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-container grid-list-md>

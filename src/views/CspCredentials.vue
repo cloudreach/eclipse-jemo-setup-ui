@@ -8,7 +8,7 @@
                     <v-card-title primary-title>
                         <div>
                             <h3 class="headline mb-0">
-                                {{csp.name + (existingUser ? ' existing user credentials' : ' admin user credentials')}}
+                                {{csp.name + (isJemoUser ? ' jemo' : ' terraform')}} user credentials
                             </h3>
                         </div>
                     </v-card-title>
@@ -64,7 +64,7 @@
                         <v-btn class="mx-4" @click="validateCredentials" color="primary">
                             Submit
                         </v-btn>
-                        <v-btn v-if="!existingUser" class="mx-4" @click="admin_user_info_dialog = true" color="secondary">
+                        <v-btn v-if="!isJemoUser" class="mx-4" @click="admin_user_info_dialog = true" color="secondary">
                             I don't have this info
                         </v-btn>
                     </v-card-actions>
@@ -110,7 +110,7 @@
         data() {
             return {
                 csp: this.$route.params.csp,
-                existingUser: this.$route.params.existingUser,
+                isJemoUser: this.$route.params.isJemoUser,
                 parameters: {},
                 credential_errors: null,
                 region: this.$route.params.csp.regions[0],
@@ -125,7 +125,7 @@
             '$route'(to) {
                 if (to && to.name === 'csp-cred') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
-                    this.existingUser = typeof to.params.existingUser !== undefined ? to.params.existingUser : this.params.existingUser;
+                    this.isJemoUser = typeof to.params.isJemoUser !== 'undefined' ? to.params.isJemoUser : this.isJemoUser;
                     this.region = to.params.csp && to.params.csp.regions ? to.params.csp.regions[0] : this.region;
                 }
             }
@@ -144,7 +144,7 @@
                         console.log(response);
                         this.credential_errors = null;
                         this.csp['region'] = regionCode;
-                        if (this.existingUser) {
+                        if (this.isJemoUser) {
                             this.validatePermissions();
                             // this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {

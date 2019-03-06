@@ -25,15 +25,6 @@
                                   :label="createLabel(params.locationType)">
                         </v-select>
 
-                        <v-text-field v-model="paramSet[params.httpPort.name]"
-                                      :label="createLabel(params.httpPort)">
-                        </v-text-field>
-
-                        <v-select v-model="paramSet[params.httpMode.name]"
-                                  :items="params.httpMode.range"
-                                  :label="createLabel(params.httpMode)">
-                        </v-select>
-
                         <v-text-field v-model="paramSet[params.whitelist.name]"
                                       :label="createLabel(params.whitelist)">
                         </v-text-field>
@@ -116,15 +107,6 @@
                         name: 'eclipse.jemo.location.type',
                         description: 'cloud or on-premise',
                         range: ['CLOUD', 'ON-PREMISE'],
-                    },
-                    httpPort: {
-                        name: 'eclipse.jemo.https.port',
-                        description: 'the HTTPS port'
-                    },
-                    httpMode: {
-                        name: 'eclipse.jemo.http.mode',
-                        description: 'the http mode',
-                        range: ['HTTP', 'HTTPS']
                     },
                     whitelist: {
                         name: 'eclipse.jemo.module.whitelist',

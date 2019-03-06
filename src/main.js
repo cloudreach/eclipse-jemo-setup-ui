@@ -7,7 +7,7 @@ import router from './router'
 Vue.config.productionTip = false;
 
 Vue.use(VueResource);
-Vue.http.options.root = 'http://localhost:8081/x2manager/setup';
+Vue.http.options.root = 'http://localhost/x2manager/setup';
 
 new Vue({
   router,

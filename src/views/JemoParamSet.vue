@@ -76,8 +76,6 @@
                 if (this.newParamSet) {
                     paramSet = {
                         'eclipse.jemo.location': this.csp.name === 'MEMORY' ? 'JEMO' : this.csp.name,
-                        'eclipse.jemo.https.port': '8080',
-                        'eclipse.jemo.http.mode': 'HTTP',
                         'eclipse.jemo.module.whitelist': '',
                         'eclipse.jemo.module.blacklist': '',
                         'eclipse.jemo.queue.polltime': '20000',

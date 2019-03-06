@@ -23,6 +23,16 @@
                 <br/>
                 <v-btn @click="createCluster(true)" color="primary" :loading="loading">Fixed</v-btn>
             </div>
+            <div v-else-if="error.code === 'KUBECTL_NOT_INSTALLED'">
+                <h3>The server can not find the kubectl command.</h3>
+                Either kubectl is not installed (<a
+                    href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank">Installation
+                instructions</a>),
+                or it is not in the path. (e.g. run: kubectl --help).
+                <br/>
+                <br/>
+                <v-btn @click="createCluster(true)" color="primary" :loading="loading">Fixed</v-btn>
+            </div>
             <div v-else>
                 <h3>Terraform failed to create the cluster. The following error occurred:</h3>
                 <pre>{{error.message}}</pre>
@@ -31,7 +41,13 @@
 
         <div v-if="clusterCreated">
             <h3>Setup Completed</h3>
-            Great job! The cluster is created. Terraform has created the following resources:
+            Great job! The cluster is created.
+            <br/>
+            You can access jemo on <a :href=clusterCreationResponse.loadBalancerUrl target="_blank">{{clusterCreationResponse.loadBalancerUrl}}</a>.
+            You may nead to wait 1-2 seconds before accessing it.
+            <br/>
+            <br/>
+            Terraform has created the following resources:
             <br/>
 
             <div>

@@ -6,7 +6,7 @@
             <v-card flat class="text-xs-center ma-3">
                 <v-card-title primary-title>
                     <div>
-                        <h3 class="headline mb-0">Use an existing {{csp.name}} user</h3>
+                        <h3 class="headline mb-0">Use an existing {{csp.name}} jemo user</h3>
                     </div>
                 </v-card-title>
 
@@ -17,7 +17,7 @@
                     is your responsibility to add these permissions and retry to validate them.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: true}}" color="primary">
+                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, isJemoUser: true}}" color="primary">
                         I have a user
                     </v-btn>
                 </v-card-actions>
@@ -26,20 +26,20 @@
             <v-card flat class="text-xs-center ma-3">
                 <v-card-title primary-title>
                     <div>
-                        <h3 class="headline mb-0">Eclipse Jemo user setup</h3>
+                        <h3 class="headline mb-0">Jemo user setup</h3>
                     </div>
                 </v-card-title>
 
                 <v-card-text>
                     Select this option if you want Jemo to generate a new user with the required permissions.
-                    Credentials for a user with Admin permissions are required, as these are needed to create the new
+                    Credentials for a terraform user with Admin permissions are required, as these are needed to create the jemo
                     user.
                     Internally, Jemo generates a <a href="https://www.terraform.io/" target="_blank">Terraform</a> form
                     with the all the needed configuration
                     (e.g. user/role/group/policy creation) and runs terraform.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, existingUser: false}}" color="secondary">
+                    <v-btn class="mx-2" :to="{name: 'csp-cred', params: {csp: csp, isJemoUser: false}}" color="secondary">
                         Jemo User Setup
                     </v-btn>
                 </v-card-actions>
@@ -48,22 +48,19 @@
             <v-card flat class="text-xs-center ma-3">
                 <v-card-title primary-title>
                     <div>
-                        <h3 class="headline mb-0">Download the Terraform form</h3>
+                        <h3 class="headline mb-0">Download the Terraform templates</h3>
                     </div>
                 </v-card-title>
 
                 <v-card-text>
                     Similar to the previous option, except that the <a href="https://www.terraform.io/" target="_blank">Terraform</a>
-                    form is not run by Jemo.
+                    templates is not run by Jemo.
                     Instead, you download the form with the all the needed configuration and it is your responsibility
-                    to run the terraform command. This option requires no credentials. The downloaded form includes
-                    placeholders
-                    for the credentials. You need to replace them with valid values, before you run the terraform
-                    command.
+                    to run the terraform command. This option requires no credentials.
                 </v-card-text>
                 <v-card-actions>
                     <v-btn class="mx-2" @click="downloadTemplates()" color="error">
-                        Download Terraform Template
+                        Download Terraform Templates
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -104,6 +101,10 @@
                     window.URL.revokeObjectURL(url);
                     a.remove();
                 });
+
+                if (this.csp.installProperties) {
+                    this.$router.push({name: 'install-props', params: {csp: this.csp}})
+                }
             }
         }
     }
