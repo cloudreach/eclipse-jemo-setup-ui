@@ -44,7 +44,7 @@
             Great job! The cluster is created.
             <br/>
             You can access jemo on <a :href=clusterCreationResponse.loadBalancerUrl target="_blank">{{clusterCreationResponse.loadBalancerUrl}}</a>.
-            You may nead to wait 1-2 seconds before accessing it.
+            You may need to wait 1-2 minutes before accessing it.
             <br/>
             <br/>
             Terraform has created the following resources:

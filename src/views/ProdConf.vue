@@ -281,7 +281,7 @@
 
                     let workstationExternalCidr = this.params.master.find(param => param.name === 'workstation-external-cidr');
                     if (workstationExternalCidr) {
-                        this.$http.get('http://ipv4.icanhazip.com')
+                        this.$http.get('https://ipv4.icanhazip.com')
                             .then(response => {
                                 console.log(response);
                                 workstationExternalCidr.value = response.data.trim() + '/32';
