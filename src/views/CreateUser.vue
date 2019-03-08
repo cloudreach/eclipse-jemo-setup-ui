@@ -57,7 +57,8 @@
                 error: null,
                 terraformResult: null,
                 terraformOutput: null,
-                loading: false
+                loading: false,
+                timer: null
             }
         },
         watch: {
@@ -109,6 +110,7 @@
                             }
                         }
                     }, response => {
+                        clearInterval(this.timer);
                         console.log(response);
                         this.error = response.data;
                         alert(response.data);

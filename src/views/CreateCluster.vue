@@ -144,6 +144,7 @@
                             }
                         }
                     }, response => {
+                        clearInterval(this.timer);
                         console.log(response);
                         this.error = response.data;
                         alert(response.data);
