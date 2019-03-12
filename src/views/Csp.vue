@@ -65,6 +65,23 @@
                 </v-card-actions>
             </v-card>
 
+            <v-card flat class="text-xs-center ma-3">
+                <v-card-title primary-title>
+                    <div>
+                        <h3 class="headline mb-0">Delete Existing Resources</h3>
+                    </div>
+                </v-card-title>
+
+                <v-card-text>
+                    Delete resources created by Jemo, if you don't need them any longer.
+                    You can select to delete the cluster, but keep the installation resources, or delete them all.
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn class="mx-2" :to="{name: 'delete', params: {csp: this.csp, mode: 'INSTALL'}}">Delete Installation Resources</v-btn>
+                    <v-btn class="mx-2" :to="{name: 'delete', params: {csp: this.csp, mode: 'CLUSTER'}}">Delete Cluster Resources</v-btn>
+                </v-card-actions>
+            </v-card>
+
         </v-layout>
     </v-container>
 </template>
@@ -105,6 +122,12 @@
                 if (this.csp.installProperties) {
                     this.$router.push({name: 'install-props', params: {csp: this.csp}})
                 }
+            },
+            deleteCluster() {
+                this.$router.push({name: 'delete', params: {csp: this.csp, mode: 'CLUSTER'}})
+            },
+            deleteAll() {
+                this.$router.push({name: 'delete', params: {csp: this.csp, mode: 'ALL'}})
             }
         }
     }

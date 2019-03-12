@@ -36,6 +36,9 @@
             <div v-else>
                 <h3>Terraform failed to create the cluster. The following error occurred:</h3>
                 <pre>{{error.message}}</pre>
+
+                <br>
+                <v-btn :to="{name: 'delete', params: {csp: this.csp, mode: 'CLUSTER'}}" color="primary">Revert</v-btn>
             </div>
         </div>
 
@@ -90,7 +93,6 @@
             }
         },
         mounted() {
-            console.log('mounted');
             this.createCluster(false);
         },
         methods: {

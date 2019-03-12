@@ -1,8 +1,8 @@
 <template>
 
     <v-container grid-list-md class="ma-5">
-        <div v-if="!userCreated && !error">
-            <h3>Please wait while Jemo creates the user.</h3>
+        <div v-if="loading && !installationComplete && !error">
+            <h3>Please wait while Jemo creates the installation resources.</h3>
             <v-progress-linear :indeterminate="true"></v-progress-linear>
             <div v-if="terraformOutput">
                 <pre>{{terraformOutput}}</pre>
@@ -22,15 +22,17 @@
 
                 <br/>
                 <br/>
-                <v-btn @click="createUser" color="primary" :loading="loading">Fixed</v-btn>
+                <v-btn @click="install" color="primary" :loading="loading">Fixed</v-btn>
             </div>
             <div v-else>
-                <h3>Terraform failed to create the user. The following error occurred:</h3>
+                <h3>Terraform failed to create the installation resources. The following error occurred:</h3>
                 <pre>{{error.message}}</pre>
+                <br/>
+                <v-btn :to="{name: 'delete', params: {csp: this.csp, mode: 'INSTALL'}}" color="primary">Revert</v-btn>
             </div>
         </div>
 
-        <div v-if="userCreated">
+        <div v-if="installationComplete">
             <h3>Setup Completed</h3>
             Great job! The user 'jemo-user' is created and has all the needed permissions.
             <br/>
@@ -53,7 +55,7 @@
             return {
                 csp: this.$route.params.csp,
                 parameters: this.$route.params.parameters,
-                userCreated: false,
+                installationComplete: false,
                 error: null,
                 terraformResult: null,
                 terraformOutput: null,
@@ -63,48 +65,50 @@
         },
         watch: {
             '$route'(to) {
-                if (to.name === 'user-create') {
-                    this.csp = to.params.csp ? to.params.csp : this.csp;
-                    this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
-                    this.userCreated = false;
-                    this.loading = false;
-                    this.error = null;
-                    this.terraformResult = null;
-                    this.terraformOutput = null;
-                    this.createUser();
+                if (to.name === 'install') {
+                    if (to.params.csp) {
+                        this.csp = to.params.csp;
+                        this.parameters = to.params.parameters ? to.params.parameters : this.parameters;
+                        this.installationComplete = false;
+                        this.loading = false;
+                        this.error = null;
+                        this.terraformResult = null;
+                        this.terraformOutput = null;
+                        this.install();
+                    }
                 }
             }
         },
         mounted() {
-            this.createUser();
+            this.install();
         },
         methods: {
-            createUser() {
+            install() {
                 this.loading = true;
                 const payload = {
                     csp: this.csp.name,
                     parameters: this.parameters
                 };
-                this.$http.post('createuser', payload)
+                this.$http.post('install', payload)
                     .then(response => {
                         console.log(response);
-                        this.timer = setInterval(this.pollForUserCreationResult, 10000);
+                        this.timer = setInterval(this.pollForDeletionResult, 10000);
                     }, response => {
                         console.log(response);
                         this.error = response.data;
                     });
             },
-            pollForUserCreationResult() {
-                this.$http.get('createuser/result/' + this.csp.name + "/" + this.parameters.region)
+            pollForDeletionResult() {
+                this.$http.get('install/result/' + this.csp.name + "/" + this.parameters.region)
                     .then(response => {
                         console.log(response);
-                        this.terraformOutput= response.data.output;
+                        this.terraformOutput = response.data.output;
                         if (response.data.status === 'FINISHED') {
                             clearInterval(this.timer);
                             if (response.data.error) {
                                 this.error = response.data.error;
                             } else {
-                                this.userCreated = true;
+                                this.installationComplete = true;
                                 this.error = null;
                                 this.terraformResult = response.data.terraformResult;
                             }

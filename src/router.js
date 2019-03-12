@@ -8,9 +8,10 @@ export default new Router({
     routes: [
         {path: '/', name: 'home', component: Home},
         {path: '/csp', name: 'csp', props: true, component: () => import('./views/Csp.vue')},
+        {path: '/delete', name: 'delete', props: true, component: () => import('./views/Delete.vue')},
         {path: '/csp-cred', name: 'csp-cred', props: true, component: () => import('./views/CspCredentials.vue')},
         {path: '/install/props', name: 'install-props', props: true, component: () => import('./views/InstallProps.vue')},
-        {path: '/user/create', name: 'user-create', props: true, component: () => import('./views/CreateUser.vue')},
+        {path: '/install', name: 'install', props: true, component: () => import('./views/CreateUser.vue')},
         {path: '/jemo/param-set', name: 'jemo-param-set', props: true, component: () => import('./views/JemoParamSet.vue')},
         {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')},
         {path: '/prod/config', name: 'prod-conf', props: true, component: () => import('./views/ProdConf.vue')},

@@ -149,7 +149,7 @@
                             // this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {
                             this.$router.push({
-                                name: 'user-create',
+                                name: 'install',
                                 params: {csp: this.csp, parameters: this.parameters}
                             })
                         }
