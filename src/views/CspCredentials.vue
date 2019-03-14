@@ -146,7 +146,6 @@
                         this.csp['region'] = regionCode;
                         if (this.isJemoUser) {
                             this.validatePermissions();
-                            // this.$router.push({name: 'csp-perm', params: {csp: this.csp}})
                         } else {
                             this.$router.push({
                                 name: 'install',

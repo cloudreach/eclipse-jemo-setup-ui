@@ -44,18 +44,51 @@
 
         <div v-if="clusterCreated">
             <h3>Setup Completed</h3>
+            <br/>
             Great job! The cluster is created.
             <br/>
             You can access jemo on <a :href=clusterCreationResponse.loadBalancerUrl target="_blank">{{clusterCreationResponse.loadBalancerUrl}}</a>.
             You may need to wait 1-2 minutes before accessing it.
             <br/>
             <br/>
-            Terraform has created the following resources:
+            Terraform reported the following created resources and outputs.
+            <br/>
             <br/>
 
-            <div>
-                <pre>{{ clusterCreationResponse.terraformResult | pretty }}</pre>
-            </div>
+            <v-toolbar flat color="white">
+                <v-toolbar-title>Created Resources</v-toolbar-title>
+            </v-toolbar>
+            <v-data-table
+                    :items=createItems(clusterCreationResponse.terraformResult.createdResources)
+                    class="elevation-1"
+                    hide-actions
+                    hide-headers
+            >
+                <template slot="items" slot-scope="props" >
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.value }}</td>
+                </template>
+            </v-data-table>
+
+            <br/>
+
+            <v-toolbar flat color="white">
+                <v-toolbar-title>Outputs</v-toolbar-title>
+            </v-toolbar>
+            <v-data-table
+                    :items=createItems(clusterCreationResponse.terraformResult.outputs)
+                    class="elevation-1"
+                    hide-actions
+                    hide-headers
+            >
+                <template slot="items" slot-scope="props" >
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.value }}</td>
+                </template>
+            </v-data-table>
+
+            <br/>
+
         </div>
 
         <div v-if="terraformFilesDownloaded">
@@ -151,11 +184,17 @@
                         this.error = response.data;
                         alert(response.data);
                     });
-            }
-        },
-        filters: {
-            pretty: function (value) {
-                return JSON.stringify(value, null, 2);
+            },
+            createItems(jsonObject) {
+                const items = [];
+                for (let key in jsonObject) {
+                    items.push({
+                        name: key,
+                        value: jsonObject[key]
+                    });
+                }
+                console.log(items);
+                return items;
             }
         }
     }

@@ -78,7 +78,7 @@
                     Otherwise you can close this page.
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="configureProdEnv" color="primary">
+                    <v-btn v-if="csp.name !== 'MEMORY'" @click="configureProdEnv" color="primary">
                         Configure a production environment
                     </v-btn>
                 </v-card-actions>
@@ -162,6 +162,7 @@
                         this.hasFinished = true;
                     }, response => {
                         console.log(response);
+                        this.loading = false;
                         alert(response.data.message);
                     });
             },

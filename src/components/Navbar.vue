@@ -8,7 +8,7 @@
         <v-spacer></v-spacer>
         <v-btn
                 flat
-                href="https://projects.eclipse.org/proposals/eclipse-jemo-cloud-application-runtime"
+                href="https://www.eclipse.org/jemo/"
                 target="_blank">
             <span class="mr-8">Project page</span>
         </v-btn>

@@ -1,6 +1,7 @@
 <template>
 
     <v-container grid-list-md class="ma-5">
+
         <div v-if="loading && !installationComplete && !error">
             <h3>Please wait while Jemo creates the installation resources.</h3>
             <v-progress-linear :indeterminate="true"></v-progress-linear>
@@ -34,12 +35,44 @@
 
         <div v-if="installationComplete">
             <h3>Setup Completed</h3>
-            Great job! The user 'jemo-user' is created and has all the needed permissions.
+            <br/>
+            Installation has finished successfully. Terraform reported the following created resources and outputs.
+            <br/>
             <br/>
 
-            <div>
-                <pre>{{ terraformResult | pretty }}</pre>
-            </div>
+            <v-toolbar flat color="white">
+                <v-toolbar-title>Created Resources</v-toolbar-title>
+            </v-toolbar>
+            <v-data-table
+                    :items=createItems(terraformResult.createdResources)
+                    class="elevation-1"
+                    hide-actions
+                    hide-headers
+            >
+                <template slot="items" slot-scope="props" >
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.value }}</td>
+                </template>
+            </v-data-table>
+
+            <br/>
+
+            <v-toolbar flat color="white">
+                <v-toolbar-title>Outputs</v-toolbar-title>
+            </v-toolbar>
+            <v-data-table
+                    :items=createItems(terraformResult.outputs)
+                    class="elevation-1"
+                    hide-actions
+                    hide-headers
+            >
+                <template slot="items" slot-scope="props" >
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.value }}</td>
+                </template>
+            </v-data-table>
+
+            <br/>
 
             Please, click the following button to input Jemo parameters<br/><br/>
 
@@ -92,13 +125,13 @@
                 this.$http.post('install', payload)
                     .then(response => {
                         console.log(response);
-                        this.timer = setInterval(this.pollForDeletionResult, 10000);
+                        this.timer = setInterval(this.pollForInstallResult, 10000);
                     }, response => {
                         console.log(response);
                         this.error = response.data;
                     });
             },
-            pollForDeletionResult() {
+            pollForInstallResult() {
                 this.$http.get('install/result/' + this.csp.name + "/" + this.parameters.region)
                     .then(response => {
                         console.log(response);
@@ -129,11 +162,17 @@
                         console.log(response);
                         alert(response.data);
                     });
-            }
-        },
-        filters: {
-            pretty: function (value) {
-                return JSON.stringify(value, null, 2);
+            },
+            createItems(jsonObject) {
+                const items = [];
+                for (let key in jsonObject) {
+                    items.push({
+                        name: key,
+                        value: jsonObject[key]
+                    });
+                }
+                console.log(items);
+                return items;
             }
         }
     }

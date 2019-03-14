@@ -3,33 +3,35 @@
     <v-container grid-list-md>
         <v-layout row wrap>
 
-            <v-card flat class="text-xs-center ma-3" v-if="!hasFinished">
-                <v-card-title primary-title>
-                    <div>
-                        <h3 class="headline mb-0">
-                            Please enter the names of the created resources
-                        </h3>
-                    </div>
-                </v-card-title>
-
-                <v-card-text>
-                    <v-form ref="form" class="mx-4">
-
-                        <div v-for="prop in csp.installProperties" :key="prop.name">
-                            <v-text-field v-model="prop.value"
-                                          :label="createLabel(prop)">
-                            </v-text-field>
+            <v-flex xs12 sm10 md9 lg7>
+                <v-card flat class="text-xs-center ma-3" v-if="!hasFinished">
+                    <v-card-title primary-title>
+                        <div>
+                            <h3 class="headline mb-0">
+                                Please enter the names of the created resources
+                            </h3>
                         </div>
+                    </v-card-title>
 
-                    </v-form>
+                    <v-card-text>
+                        <v-form ref="form" class="mx-4">
 
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn @click="sendInstallProperties" :loading="loading" color="primary">
-                        Submit
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                            <div v-for="prop in csp.installProperties" :key="prop.name">
+                                <v-text-field v-model="prop.value"
+                                              :label="createLabel(prop)">
+                                </v-text-field>
+                            </div>
+
+                        </v-form>
+
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn @click="sendInstallProperties" :loading="loading" color="primary">
+                            Submit
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-flex>
 
         </v-layout>
     </v-container>
