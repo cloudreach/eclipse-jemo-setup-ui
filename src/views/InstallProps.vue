@@ -17,9 +17,17 @@
                         <v-form ref="form" class="mx-4">
 
                             <div v-for="prop in csp.installProperties" :key="prop.name">
-                                <v-text-field v-model="prop.value"
+                                <div v-if="prop.range">
+                                    <v-select v-model="prop.value"
+                                              :items="prop.range"
                                               :label="createLabel(prop)">
-                                </v-text-field>
+                                    </v-select>
+                                </div>
+                                <div v-else>
+                                    <v-text-field v-model="prop.value"
+                                                  :label="createLabel(prop)">
+                                    </v-text-field>
+                                </div>
                             </div>
 
                         </v-form>
