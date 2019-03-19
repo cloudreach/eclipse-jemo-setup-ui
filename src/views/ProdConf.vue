@@ -272,46 +272,53 @@
                     params: {csp: this.csp, parameters: parameters, downloadFormsOnly: downloadFormsOnly}
                 })
             },
+            init() {
+                this.$http.get('cluster/params/' + this.csp.name)
+                    .then(response => {
+                        console.log(response);
+                        this.params = response.data;
+
+                        let workstationExternalCidr = this.params.master.find(param => param.name === 'workstation-external-cidr');
+                        if (workstationExternalCidr) {
+                            this.$http.get('https://ipv4.icanhazip.com')
+                                .then(response => {
+                                    console.log(response);
+                                    workstationExternalCidr.value = response.data.trim() + '/32';
+                                }, response => {
+                                    console.log("Can not find local ip");
+                                    console.log(response);
+                                });
+                        }
+                    }, response => {
+                        console.log(response);
+                    });
+
+                this.$http.get('policy/' + this.csp.name)
+                    .then(response => {
+                        console.log(response);
+                        this.policies = response.data;
+                        if (this.policies && this.policies.includes('jemo-policy')) {
+                            this.selectedPolicy = 'jemo-policy';
+                        }
+                    }, response => {
+                        console.log(response);
+                    });
+
+                this.paramSets.forEach(paramSet => this.instanceParamSets[paramSet.name] = 0);
+            }
         },
         created() {
-            this.$http.get('cluster/params/' + this.csp.name)
-                .then(response => {
-                    console.log(response);
-                    this.params = response.data;
-
-                    let workstationExternalCidr = this.params.master.find(param => param.name === 'workstation-external-cidr');
-                    if (workstationExternalCidr) {
-                        this.$http.get('https://ipv4.icanhazip.com')
-                            .then(response => {
-                                console.log(response);
-                                workstationExternalCidr.value = response.data.trim() + '/32';
-                            }, response => {
-                                console.log("Can not find local ip");
-                                console.log(response);
-                            });
-                    }
-                }, response => {
-                    console.log(response);
-                });
-
-            this.$http.get('policy/' + this.csp.name)
-                .then(response => {
-                    console.log(response);
-                    this.policies = response.data;
-                    if (this.policies && this.policies.includes('jemo-policy')) {
-                        this.selectedPolicy = 'jemo-policy';
-                    }
-                }, response => {
-                    console.log(response);
-                });
-
-            this.paramSets.forEach(paramSet => this.instanceParamSets[paramSet.name] = 0);
+            this.init();
         },
         watch: {
             '$route'(to) {
                 if (to.name === 'prod-conf') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
                     this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
+
+                    if (to.params.csp.name !== this.csp.name) {
+                        this.init();
+                    }
                 }
             }
         },
