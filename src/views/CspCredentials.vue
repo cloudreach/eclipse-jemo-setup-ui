@@ -166,8 +166,12 @@
                         this.redirectToParamSet();
                     }, response => {
                         console.log(response);
-                        this.permission_errors = response.data;
-                        this.permissions_error_dialog = true;
+                        if (response.status === '403') {
+                            this.permission_errors = response.data;
+                            this.permissions_error_dialog = true;
+                        } else {
+                            alert(response.data);
+                        }
                     });
             },
             redirectToParamSet() {

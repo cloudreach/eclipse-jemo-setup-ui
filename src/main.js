@@ -7,7 +7,7 @@ import router from './router'
 Vue.config.productionTip = false;
 
 Vue.use(VueResource);
-Vue.http.options.root = '/jemo-manager/setup';
+Vue.http.options.root = '/jemo/setup';
 
 new Vue({
   router,
