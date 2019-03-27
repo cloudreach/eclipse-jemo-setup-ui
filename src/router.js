@@ -14,6 +14,7 @@ export default new Router({
         {path: '/install', name: 'install', props: true, component: () => import('./views/Install.vue')},
         {path: '/jemo/param-set', name: 'jemo-param-set', props: true, component: () => import('./views/JemoParamSet.vue')},
         {path: '/jemo/params', name: 'jemo-params', props: true, component: () => import('./views/JemoParams.vue')},
+        {path: '/jemo/setup-complete', name: 'setup-complete', props: true, component: () => import('./views/SetupComplete.vue')},
         {path: '/prod/config', name: 'prod-conf', props: true, component: () => import('./views/ProdConf.vue')},
         {path: '/cluster/create', name: 'create-cluster', props: true, component: () => import('./views/CreateCluster.vue')},
         {path: '*', redirect: { name: 'home' }}

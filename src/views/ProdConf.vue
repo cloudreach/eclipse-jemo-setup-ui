@@ -318,6 +318,8 @@
 
                     if (to.params.csp.name !== this.csp.name) {
                         this.init();
+                    } else {
+                        this.paramSets.forEach(paramSet => this.instanceParamSets[paramSet.name] = 0);
                     }
                 }
             }

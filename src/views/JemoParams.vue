@@ -3,7 +3,7 @@
     <v-container grid-list-md>
         <v-layout row wrap>
 
-            <v-card flat class="text-xs-center ma-3" v-if="!hasFinished">
+            <v-card flat class="text-xs-center ma-3">
                 <v-card-title primary-title>
                     <div>
                         <h3 class="headline mb-0">
@@ -64,26 +64,6 @@
                 </v-card-actions>
             </v-card>
 
-            <v-card flat class="text-xs-center ma-3" v-else>
-                <v-card-title primary-title>
-                    <div>
-                        <h3 class="headline mb-0">
-                            Setup Complete
-                        </h3>
-                    </div>
-                </v-card-title>
-                <v-card-text>
-                    Great job!
-                    If you wish you can configure a production environment by clicking on the button below.
-                    Otherwise you can close this page.
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn v-if="csp.name !== 'MEMORY'" @click="configureProdEnv" color="primary">
-                        Configure a production environment
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-
         </v-layout>
     </v-container>
 </template>
@@ -95,7 +75,6 @@
                 csp: this.$route.params.csp,
                 paramSet: this.$route.params.paramSet,
                 paramSets: this.$route.params.paramSets,
-                hasFinished: false,
                 valid: true,
                 loading: false,
                 params: {
@@ -143,7 +122,6 @@
                     this.csp = to.params.csp ? to.params.csp : this.csp;
                     this.paramSet = to.params.paramSet ? to.params.paramSet : this.paramSet;
                     this.paramSets = to.params.paramSets ? to.params.paramSets : this.paramSets;
-                    this.hasFinished = false;
                     this.loading = false;
                 }
             }
@@ -159,7 +137,10 @@
                 this.$http.post('jemoparams', payload)
                     .then(response => {
                         console.log(response);
-                        this.hasFinished = true;
+                        this.$router.push({
+                            name: 'setup-complete',
+                            params: {csp: this.csp, paramSet: this.paramSet, paramSets: this.paramSets}
+                        })
                     }, response => {
                         console.log(response);
                         this.loading = false;
@@ -168,12 +149,6 @@
             },
             createLabel(param) {
                 return param.name + ' (' + param.description + ')';
-            },
-            configureProdEnv() {
-                this.$router.push({
-                    name: 'prod-conf',
-                    params: {csp: this.csp, paramSets: this.paramSets}
-                })
             }
         }
     }
