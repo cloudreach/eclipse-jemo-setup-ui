@@ -113,7 +113,7 @@
                 isJemoUser: this.$route.params.isJemoUser,
                 parameters: {},
                 credential_errors: null,
-                region: this.$route.params.csp.regions[0],
+                region: this.$route.params.csp.region ? this.$route.params.csp.region : this.$route.params.csp.regions[0],
                 regionCode: null,
                 permission_errors: null,
                 permissions_validated: false,
@@ -126,7 +126,7 @@
                 if (to && to.name === 'csp-cred') {
                     this.csp = to.params.csp ? to.params.csp : this.csp;
                     this.isJemoUser = typeof to.params.isJemoUser !== 'undefined' ? to.params.isJemoUser : this.isJemoUser;
-                    this.region = to.params.csp && to.params.csp.regions ? to.params.csp.regions[0] : this.region;
+                    this.region = to.params.csp && to.params.csp.region ? to.params.csp.region : this.region;
                 }
             }
         },
