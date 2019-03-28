@@ -2,7 +2,7 @@
 
     <v-container grid-list-md>
         <v-layout row wrap>
-            <v-card flat class="text-xs-center ma-3">
+            <v-card flat class="text-xs-left ma-3">
                 <v-card-title primary-title>
                     <div>
                         <h3 class="headline mb-0">
