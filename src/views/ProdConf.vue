@@ -60,25 +60,28 @@
                     </v-card-text>
                 </div>
 
-                <v-divider></v-divider>
-                <v-subheader>Network parameters</v-subheader>
-                <v-card-text v-if="!existingNetworks">
-                    <div v-for="param in params.network" :key="param.name">
-                        <v-text-field
-                                v-model="param.value"
-                                :label="createLabel(param)"
-                                required>
-                        </v-text-field>
-                    </div>
-                    <v-btn @click="getExistingNetworks" color="primary">Or Select existing network</v-btn>
-                </v-card-text>
-                <v-card-text v-else>
-                    <v-select v-model="selectedNetwork"
-                              :items="existingNetworks"
-                              label="Existing Networks">
-                    </v-select>
-                    <v-btn @click="existingNetworks=null" color="primary">Or Select new network</v-btn>
-                </v-card-text>
+
+                <div v-if="params.network.length > 0">
+                    <v-divider></v-divider>
+                    <v-subheader>Network parameters</v-subheader>
+                    <v-card-text v-if="!existingNetworks">
+                        <div v-for="param in params.network" :key="param.name">
+                            <v-text-field
+                                    v-model="param.value"
+                                    :label="createLabel(param)"
+                                    required>
+                            </v-text-field>
+                        </div>
+                        <v-btn @click="getExistingNetworks" color="primary">Or Select existing network</v-btn>
+                    </v-card-text>
+                    <v-card-text v-else>
+                        <v-select v-model="selectedNetwork"
+                                  :items="existingNetworks"
+                                  label="Existing Networks">
+                        </v-select>
+                        <v-btn @click="existingNetworks=null" color="primary">Or Select new network</v-btn>
+                    </v-card-text>
+                </div>
 
                 <v-divider></v-divider>
                 <v-subheader>Map containers to parameter sets</v-subheader>
